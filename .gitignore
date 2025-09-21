@@ -1,0 +1,148 @@
+# 🚀 Traffic Router AI Platform - Git Ignore Rules
+
+# === СИСТЕМНЫЕ ФАЙЛЫ ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# === NODE.JS ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+.npm
+.yarn-integrity
+.pnp.*
+
+# === NEXT.JS ===
+/.next/
+/out/
+/build
+next-env.d.ts
+
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.cache
+.mypy_cache/
+.dmypy.json
+dmyj.json
+
+# === ВИРТУАЛЬНЫЕ ОКРУЖЕНИЯ ===
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+.virtualenv
+
+# === КОНФИДЕНЦИАЛЬНЫЕ ДАННЫЕ ===
+.env*
+config.env
+*.key
+*.pem
+*.p12
+*.crt
+secrets/
+private/
+
+# === ЛОГИ И ВРЕМЕННЫЕ ФАЙЛЫ ===
+logs/
+*.log
+log/
+temp/
+tmp/
+.tmp/
+
+# === КЕШИ И ДАННЫЕ ===
+data/
+cache/
+data/video-cache/
+memory/entities/
+*.db
+*.sqlite
+*.sqlite3
+
+# === AI МОДЕЛИ И ВЕКТОРНЫЕ БАЗЫ ===
+models/
+embeddings/
+vector_db/
+.faiss/
+*.pkl
+*.pickle
+*.joblib
+
+# === КОМПИЛИРОВАННЫЕ ФАЙЛЫ ===
+dist/
+build/
+out/
+.next/
+.nuxt/
+coverage/
+.nyc_output/
+
+# === TYPESCRIPT ===
+*.tsbuildinfo
+.tscache/
+
+# === РАЗРАБОТКА И IDE ===
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# === КОНТЕЙНЕРИЗАЦИЯ ===
+docker-compose.override.yml
+.dockerignore
+Dockerfile.dev
+
+# === ТЕСТЫ И ОТЧЕТЫ ===
+test-results/
+coverage.xml
+junit.xml
+*.lcov
+
+# === VERCEL ===
+.vercel
+
+# === ПРОЕКТНЫЕ СПЕЦИФИЧНЫЕ ФАЙЛЫ ===
+# Backup files from agents
+agents/backup/
+agents/recovery_*.py.bak
+
+# MCP временные файлы
+mcp-server/temp/
+mcp-server/cache/
+
+# YouTube временные файлы
+server/temp/
+server/downloads/
+
+# Статистика и аналитика
+analytics/
+stats/
+metrics/
+
+# === РАЗРАБОТКА ===
+.dev/
+.local/
+local.config.*
+dev.config.*
+debug/

@@ -1,0 +1,77 @@
+# Конфигурация AI агента восстановления
+services:
+  web:
+    port: 13000
+    health_endpoint: "/"
+    restart_command: "npm run dev"
+    docker_container: "traffic-router-web"
+    
+  ai-proxy:
+    port: 13081
+    health_endpoint: "/health"
+    restart_command: "npm run dev:proxy"
+    docker_container: "traffic-router-ai-proxy"
+    
+  monitoring:
+    port: 13082
+    health_endpoint: "/health"
+    restart_command: "npm run dev:monitor"
+    docker_container: "traffic-router-monitoring"
+    
+  mcp-server:
+    port: 3001
+    health_endpoint: "/health"
+    restart_command: "npm run dev:mcp"
+    docker_container: "traffic-router-mcp"
+
+monitoring:
+  check_interval: 30  # секунды
+  timeout: 10
+  cpu_threshold: 90   # процент
+  memory_threshold: 90
+  disk_threshold: 85
+
+idle_testing:
+  enabled: true
+  idle_threshold_minutes: 60  # время простоя перед началом тестирования
+  test_interval_minutes: 30   # интервал между тестами во время простоя
+  tests:
+    tunnel_connectivity: true
+    latency_check: true
+    ai_services_health: true
+    geolocation_accuracy: true
+    system_resources: true
+  logging:
+    detailed_results: true
+    performance_metrics: true
+    optimization_insights: true
+
+memory:
+  enabled: true
+  format: "markdown"
+  directory: "memory"
+  entities_directory: "memory/entities"
+  main_file: "memory/system.md"
+  retention_days: 30
+  auto_cleanup: true
+  obsidian_links: true
+
+notifications:
+  telegram_bot_token: "${TELEGRAM_BOT_TOKEN}"
+  telegram_chat_id: "${TELEGRAM_CHAT_ID}"
+  email_enabled: true
+  sms_enabled: false
+
+recovery:
+  max_attempts: 3
+  cooldown_period: 300  # секунды
+  escalation_timeout: 1800  # 30 минут
+
+ai_capabilities:
+  predictive_analysis: true
+  log_pattern_recognition: true
+  performance_optimization: true
+  auto_scaling: true
+  memory_learning: true
+  pattern_recognition: true
+  idle_optimization: true

@@ -1,0 +1,139 @@
+{
+  "pools": {
+    "ai-services": {
+      "name": "ai-services",
+      "loadBalanceStrategy": "latency-based",
+      "healthCheckInterval": 30000,
+      "failoverEnabled": true,
+      "endpoints": [
+        {
+          "id": "us-east-ai-1",
+          "host": "ai-proxy-us-east-1.example.com",
+          "port": 1080,
+          "protocol": "socks5",
+          "region": "US-East",
+          "maxConnections": 100
+        },
+        {
+          "id": "us-west-ai-1",
+          "host": "ai-proxy-us-west-1.example.com",
+          "port": 1080,
+          "protocol": "socks5",
+          "region": "US-West",
+          "maxConnections": 100
+        },
+        {
+          "id": "eu-ai-1",
+          "host": "ai-proxy-eu-1.example.com",
+          "port": 1080,
+          "protocol": "socks5",
+          "region": "EU-Central",
+          "maxConnections": 80
+        }
+      ]
+    },
+    "social-media": {
+      "name": "social-media",
+      "loadBalanceStrategy": "round-robin",
+      "healthCheckInterval": 60000,
+      "failoverEnabled": true,
+      "endpoints": [
+        {
+          "id": "social-us-1",
+          "host": "social-proxy-us.example.com",
+          "port": 8080,
+          "protocol": "http",
+          "region": "US",
+          "maxConnections": 50
+        },
+        {
+          "id": "social-eu-1",
+          "host": "social-proxy-eu.example.com",
+          "port": 8080,
+          "protocol": "http",
+          "region": "EU",
+          "maxConnections": 50
+        }
+      ]
+    },
+    "messengers": {
+      "name": "messengers",
+      "loadBalanceStrategy": "least-connections",
+      "healthCheckInterval": 45000,
+      "failoverEnabled": true,
+      "endpoints": [
+        {
+          "id": "msg-us-1",
+          "host": "messenger-proxy-us.example.com",
+          "port": 1080,
+          "protocol": "socks5",
+          "region": "US",
+          "maxConnections": 200
+        },
+        {
+          "id": "msg-eu-1",
+          "host": "messenger-proxy-eu.example.com",
+          "port": 1080,
+          "protocol": "socks5",
+          "region": "EU",
+          "maxConnections": 150
+        }
+      ]
+    },
+    "fallback": {
+      "name": "fallback",
+      "loadBalanceStrategy": "random",
+      "healthCheckInterval": 120000,
+      "failoverEnabled": false,
+      "endpoints": [
+        {
+          "id": "fallback-global-1",
+          "host": "fallback-proxy.example.com",
+          "port": 3128,
+          "protocol": "http",
+          "region": "Global",
+          "maxConnections": 300
+        },
+        {
+          "id": "fallback-global-2",
+          "host": "fallback-proxy-2.example.com",
+          "port": 3128,
+          "protocol": "http",
+          "region": "Global",
+          "maxConnections": 300
+        }
+      ]
+    }
+  },
+  "rules": {
+    "ai_services": {
+      "domains": ["*.openai.com", "*.anthropic.com", "*.google.ai", "*.huggingface.co"],
+      "pool": "ai-services",
+      "priority": 100
+    },
+    "social_media": {
+      "domains": ["*.facebook.com", "*.instagram.com", "*.twitter.com", "*.tiktok.com"],
+      "pool": "social-media",
+      "priority": 70
+    },
+    "messengers": {
+      "domains": ["*.whatsapp.com", "*.telegram.org", "*.discord.com"],
+      "pool": "messengers",
+      "priority": 80
+    },
+    "russian_sites": {
+      "domains": ["*.ru", "*.рф", "*yandex.*", "*mail.ru", "*vk.com"],
+      "pool": "direct",
+      "priority": 90
+    }
+  },
+  "settings": {
+    "connection_timeout": 10000,
+    "read_timeout": 30000,
+    "retry_attempts": 3,
+    "retry_delay": 1000,
+    "enable_compression": true,
+    "user_agent_rotation": true,
+    "dns_over_https": true
+  }
+}
