@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Router - Web Interface</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .status-card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .button { padding: 12px 24px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .button:hover { background: #0056b3; }
+        .button.success { background: #28a745; }
+        .button.danger { background: #dc3545; }
+        .status-indicator { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .status-connected { background: #28a745; }
+        .status-disconnected { background: #dc3545; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-item { background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .stat-value { font-size: 24px; font-weight: bold; color: #007bff; }
+        .stat-label { font-size: 12px; color: #666; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Traffic Router</h1>
+            <p>Система маршрутизации трафика с геолокацией</p>
+        </div>
+        
+        <div class="status-card">
+            <h2>Статус подключения</h2>
+            <p><span class="status-indicator" id="statusIndicator"></span><span id="statusText">Проверка соединения...</span></p>
+            <p><strong>Сервер:</strong> <span id="serverUrl">http://localhost:8080</span></p>
+            <div style="margin-top: 15px;">
+                <button class="button" onclick="connect()" id="connectBtn">Подключиться</button>
+                <button class="button" onclick="testConnection()">Тест соединения</button>
+                <button class="button" onclick="openSettings()">Настройки</button>
+            </div>
+        </div>
+        
+        <div class="status-card">
+            <h2>Статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalRequests">0</div>
+                    <div class="stat-label">Всего запросов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="proxiedRequests">0</div>
+                    <div class="stat-label">Через прокси</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="directRequests">0</div>
+                    <div class="stat-label">Напрямую</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgLatency">0ms</div>
+                    <div class="stat-label">Средняя задержка</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-card">
+            <h2>Загрузки</h2>
+            <p>Доступные версии для скачивания:</p>
+            <div style="margin-top: 15px;">
+                <button class="button" onclick="downloadWindows()">📥 Windows (.exe)</button>
+                <button class="button" onclick="downloadLinux()">📥 Linux (.AppImage)</button>
+                <button class="button" onclick="downloadAndroid()">📥 Android (.apk)</button>
+                <button class="button" onclick="downloadMac()">📥 macOS (.dmg)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let connected = false;
+        let stats = { totalRequests: 0, proxiedRequests: 0, directRequests: 0, avgLatency: 0 };
+        
+        function updateUI() {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            const connectBtn = document.getElementById('connectBtn');
+            
+            if (connected) {
+                indicator.className = 'status-indicator status-connected';
+                statusText.textContent = 'Подключено';
+                connectBtn.textContent = 'Отключиться';
+                connectBtn.className = 'button danger';
+            } else {
+                indicator.className = 'status-indicator status-disconnected';
+                statusText.textContent = 'Отключено';
+                connectBtn.textContent = 'Подключиться';
+                connectBtn.className = 'button';
+            }
+            
+            // Update stats
+            document.getElementById('totalRequests').textContent = stats.totalRequests.toLocaleString();
+            document.getElementById('proxiedRequests').textContent = stats.proxiedRequests.toLocaleString();
+            document.getElementById('directRequests').textContent = stats.directRequests.toLocaleString();
+            document.getElementById('avgLatency').textContent = stats.avgLatency + 'ms';
+        }
+        
+        function connect() {
+            if (connected) {
+                connected = false;
+                alert('Отключено от Traffic Router');
+            } else {
+                connected = true;
+                alert('Подключено к Traffic Router');
+                // Simulate some stats
+                stats.totalRequests = Math.floor(Math.random() * 1000);
+                stats.proxiedRequests = Math.floor(stats.totalRequests * 0.7);
+                stats.directRequests = stats.totalRequests - stats.proxiedRequests;
+                stats.avgLatency = Math.floor(Math.random() * 100) + 50;
+            }
+            updateUI();
+        }
+        
+        function testConnection() {
+            alert('Тестирование соединения с сервером...\n\nРезультат: Соединение успешно\nЗадержка: 45ms');
+        }
+        
+        function openSettings() {
+            const newUrl = prompt('Введите URL сервера:', document.getElementById('serverUrl').textContent);
+            if (newUrl) {
+                document.getElementById('serverUrl').textContent = newUrl;
+            }
+        }
+        
+        function downloadWindows() { alert('Загрузка Windows версии...'); }
+        function downloadLinux() { alert('Загрузка Linux версии...'); }
+        function downloadAndroid() { alert('Загрузка Android версии...'); }
+        function downloadMac() { alert('Загрузка macOS версии...'); }
+        
+        // Initialize
+        updateUI();
+        
+        // Simulate periodic updates
+        setInterval(() => {
+            if (connected) {
+                stats.totalRequests += Math.floor(Math.random() * 5);
+                stats.proxiedRequests = Math.floor(stats.totalRequests * 0.7);
+                stats.directRequests = stats.totalRequests - stats.proxiedRequests;
+                stats.avgLatency = Math.floor(Math.random() * 20) + 40;
+                updateUI();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,10 +1,10 @@
 "use client"
 
-import type React from "react"
+import * as React from "react"
 import { useState, useEffect } from "react"
 import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView, Alert, StatusBar } from "react-native"
-import { TrafficRouterClient } from "../common/traffic-router-client"
-import type { ConnectionStatus, TrafficStats } from "../common/client-config"
+import { TrafficRouterClient } from "../../common/traffic-router-client"
+import type { ConnectionStatus, TrafficStats } from "../../common/client-config"
 
 const TrafficRouterApp: React.FC = () => {
   const [client] = useState(
@@ -133,9 +133,12 @@ const TrafficRouterApp: React.FC = () => {
               </Text>
             </View>
             <TouchableOpacity
-              style={[styles.button, status.connected ? styles.buttonSecondary : styles.buttonPrimary]}
-              onPress={status.connected ? handleDisconnect : handleConnect}
-              disabled={isConnecting}
+              style={[
+                styles.button, 
+                status.connected ? styles.buttonSecondary : styles.buttonPrimary,
+                isConnecting ? styles.buttonDisabled : {}
+              ]}
+              onPress={isConnecting ? undefined : (status.connected ? handleDisconnect : handleConnect)}
             >
               <Text style={styles.buttonText}>
                 {isConnecting ? "Подключение..." : status.connected ? "Отключиться" : "Подключиться"}
@@ -152,10 +155,7 @@ const TrafficRouterApp: React.FC = () => {
             </View>
             <Switch
               value={status.proxyActive}
-              onValueChange={handleToggleProxy}
-              disabled={!status.connected}
-              trackColor={{ false: "#767577", true: "#3b82f6" }}
-              thumbColor={status.proxyActive ? "#ffffff" : "#f4f3f4"}
+              onValueChange={status.connected ? handleToggleProxy : undefined}
             />
           </View>
         </View>
@@ -335,6 +335,10 @@ const styles = StyleSheet.create({
   },
   buttonSecondary: {
     backgroundColor: "#6b7280",
+  },
+  buttonDisabled: {
+    backgroundColor: "#d1d5db",
+    opacity: 0.6,
   },
   buttonText: {
     color: "#ffffff",

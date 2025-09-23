@@ -1,0 +1,63 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.trafficrouter.desktop
+productName: Traffic Router
+files:
+  - filter:
+      - dist/**/*
+      - src/renderer/**/*
+      - package.json
+extraResources:
+  - from: ../../server
+    to: server
+    filter:
+      - '**/*'
+  - from: ../../lib
+    to: lib
+    filter:
+      - '**/*'
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - ia32
+    - target: portable
+      arch:
+        - x64
+        - ia32
+  icon: build/icon.ico
+  requestedExecutionLevel: asInvoker
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+    - target: rpm
+      arch:
+        - x64
+  icon: build/icon.png
+  category: Network
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: build/icon.icns
+  category: public.app-category.networking
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Traffic Router
+publish:
+  provider: github
+  owner: traffic-router
+  repo: desktop-app
+electronVersion: 28.3.3

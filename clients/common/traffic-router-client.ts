@@ -1,4 +1,5 @@
 import type { ClientConfig, ConnectionStatus, TrafficStats } from "./client-config"
+import { fetchWithTimeout } from "../../lib/fetch-timeout-polyfill"
 
 export class TrafficRouterClient {
   private config: ClientConfig
@@ -34,7 +35,7 @@ export class TrafficRouterClient {
     try {
       console.log(`[TrafficRouterClient] Connecting to ${this.config.serverUrl}`)
 
-      const response = await fetch(`${this.config.serverUrl}/health`, {
+      const response = await fetchWithTimeout(`${this.config.serverUrl}/health`, {
         method: "GET",
         timeout: 5000,
       })
@@ -83,7 +84,7 @@ export class TrafficRouterClient {
   // Запуск прокси
   async startProxy(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.config.serverUrl}/proxy/start`, {
+      const response = await fetchWithTimeout(`${this.config.serverUrl}/proxy/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ port: this.config.proxyPort }),
@@ -108,7 +109,7 @@ export class TrafficRouterClient {
   // Остановка прокси
   async stopProxy(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.config.serverUrl}/proxy/stop`, {
+      const response = await fetchWithTimeout(`${this.config.serverUrl}/proxy/stop`, {
         method: "POST",
       })
 
@@ -174,7 +175,7 @@ export class TrafficRouterClient {
   private startHeartbeat(): void {
     this.heartbeatInterval = setInterval(async () => {
       try {
-        const response = await fetch(`${this.config.serverUrl}/health`, {
+        const response = await fetchWithTimeout(`${this.config.serverUrl}/health`, {
           method: "GET",
           timeout: 3000,
         })
@@ -190,14 +191,14 @@ export class TrafficRouterClient {
         this.status.lastError = "Server not reachable"
         this.emit("connectionLost")
       }
-    }, 30000) // Каждые 30 секунд
+    }, 30000) as unknown as NodeJS.Timeout // Каждые 30 секунд
   }
 
   // Сбор статистики
   private startStatsCollection(): void {
     this.statsInterval = setInterval(async () => {
       try {
-        const response = await fetch(`${this.config.serverUrl}/stats`)
+        const response = await fetchWithTimeout(`${this.config.serverUrl}/stats`)
         if (response.ok) {
           const serverStats = await response.json()
           this.updateStatsFromServer(serverStats)
@@ -206,7 +207,7 @@ export class TrafficRouterClient {
       } catch (error) {
         console.warn("[TrafficRouterClient] Failed to fetch stats:", error)
       }
-    }, 10000) // Каждые 10 секунд
+    }, 10000) as unknown as NodeJS.Timeout // Каждые 10 секунд
   }
 
   private updateStatsFromServer(serverStats: any): void {
@@ -230,7 +231,7 @@ export class TrafficRouterClient {
     const startTime = Date.now()
 
     try {
-      const response = await fetch(`${this.config.serverUrl}/test`, {
+      const response = await fetchWithTimeout(`${this.config.serverUrl}/test`, {
         method: "GET",
         timeout: 10000,
       })
@@ -255,7 +256,7 @@ export class TrafficRouterClient {
   // Очистка статистики
   async clearStats(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.config.serverUrl}/stats/clear`, {
+      const response = await fetchWithTimeout(`${this.config.serverUrl}/stats/clear`, {
         method: "POST",
       })
 

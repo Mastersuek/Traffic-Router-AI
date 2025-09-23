@@ -1,0 +1,44 @@
+# Monitoring Service Dockerfile
+FROM node:18-alpine AS base
+
+# Install system dependencies
+RUN apk update && apk upgrade && \
+    apk add --no-cache libc6-compat dumb-init curl && \
+    rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install dependencies
+RUN npm ci --only=production --no-audit --no-fund && \
+    npm cache clean --force
+
+# Copy application files
+COPY lib ./lib
+COPY server/monitoring-server.js ./server/
+COPY config ./config
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Create necessary directories
+RUN mkdir -p /var/log/traffic-router && chown nextjs:nodejs /var/log/traffic-router
+RUN mkdir -p /app/monitoring-data && chown nextjs:nodejs /app/monitoring-data
+
+USER nextjs
+
+# Set environment
+ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=256"
+
+EXPOSE 3002 9090
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:3002/health || exit 1
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "server/monitoring-server.js"]

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Traffic Router
+Comment=Система маршрутизации трафика
+Exec=TrafficRouter
+Icon=traffic-router
+Terminal=false
+Type=Application
+Categories=Network;

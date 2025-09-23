@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
-import { TrafficRouterClient } from "../common/traffic-router-client"
-import type { ConnectionStatus, TrafficStats } from "../common/client-config"
+import { TrafficRouterClient } from "../../common/traffic-router-client"
+import type { ConnectionStatus, TrafficStats } from "../../common/client-config"
 import { Activity, Globe, Shield, Settings, BarChart3, Wifi, WifiOff } from "lucide-react"
 
 export function MainWindow() {

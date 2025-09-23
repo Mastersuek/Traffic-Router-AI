@@ -1,0 +1,112 @@
+{
+  "mcpServers": {
+    "traffic-router-mcp": {
+      "command": "node",
+      "args": ["server/mcp-integration-server.js"],
+      "env": {
+        "MCP_SERVER_PORT": "3014",
+        "LOG_LEVEL": "info",
+        "NODE_ENV": "development"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "check_health",
+        "get_logs",
+        "system_status"
+      ],
+      "description": "Traffic Router MCP Server for system management and AI agent integration",
+      "capabilities": [
+        "tools",
+        "resources", 
+        "prompts",
+        "logging"
+      ]
+    },
+    "deepmcp-agent": {
+      "command": "uvx",
+      "args": ["deepmcpagent@latest"],
+      "env": {
+        "DEEPMCP_LOG_LEVEL": "INFO",
+        "DEEPMCP_PORT": "3002"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "analyze_system",
+        "generate_recovery_plan",
+        "execute_diagnostics"
+      ],
+      "description": "Deep MCP Agent for advanced AI-powered system analysis and recovery",
+      "capabilities": [
+        "tools",
+        "resources",
+        "prompts",
+        "reasoning"
+      ]
+    },
+    "memory-mcp": {
+      "command": "node",
+      "args": ["lib/mcp-memory-server.js"],
+      "env": {
+        "MEMORY_PORT": "3003",
+        "MEMORY_PATH": "./memory",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "read_memory",
+        "search_memory",
+        "update_memory"
+      ],
+      "description": "Memory MCP Server for AI agent memory management in markdown format",
+      "capabilities": [
+        "resources",
+        "tools"
+      ]
+    },
+    "system-monitor-mcp": {
+      "command": "node", 
+      "args": ["lib/mcp-system-monitor.js"],
+      "env": {
+        "MONITOR_PORT": "3004",
+        "MONITOR_INTERVAL": "30000",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "get_metrics",
+        "check_services",
+        "get_alerts"
+      ],
+      "description": "System Monitor MCP Server for real-time system monitoring and alerting",
+      "capabilities": [
+        "resources",
+        "tools",
+        "logging"
+      ]
+    }
+  },
+  "clientConfig": {
+    "autoConnect": true,
+    "reconnectInterval": 5000,
+    "maxReconnectAttempts": 10,
+    "timeout": 30000,
+    "enableLogging": true,
+    "logLevel": "info"
+  },
+  "security": {
+    "enableAuth": false,
+    "allowedOrigins": ["http://localhost:13000", "http://localhost:13081"],
+    "rateLimiting": {
+      "enabled": true,
+      "maxRequests": 100,
+      "windowMs": 60000
+    }
+  },
+  "features": {
+    "enableToolExecution": true,
+    "enableResourceAccess": true,
+    "enablePromptGeneration": true,
+    "enableMemoryIntegration": true,
+    "enableSystemMonitoring": true
+  }
+}

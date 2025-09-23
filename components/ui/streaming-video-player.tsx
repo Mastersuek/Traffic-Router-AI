@@ -277,7 +277,7 @@ export function StreamingVideoPlayer({
       if (isPlaying) {
         setShowControls(false)
       }
-    }, 3000)
+    }, 3000) as unknown as NodeJS.Timeout
   }, [isPlaying])
 
   // Инициализация
@@ -340,7 +340,7 @@ export function StreamingVideoPlayer({
   // Статистика
   useEffect(() => {
     if (isPlaying) {
-      statsIntervalRef.current = setInterval(updateVideoStats, 1000)
+      statsIntervalRef.current = setInterval(updateVideoStats, 1000) as unknown as NodeJS.Timeout
     } else {
       if (statsIntervalRef.current) {
         clearInterval(statsIntervalRef.current)

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Router</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 16px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status.connected {
+            background: #4CAF50;
+        }
+
+        .status.disconnected {
+            background: #F44336;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+
+        .button:hover {
+            background: #1976D2;
+        }
+
+        .button.success {
+            background: #4CAF50;
+        }
+
+        .button.success:hover {
+            background: #45a049;
+        }
+
+        .button.danger {
+            background: #F44336;
+        }
+
+        .button.danger:hover {
+            background: #d32f2f;
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .status-label {
+            color: #666;
+        }
+
+        .status-value {
+            font-weight: 600;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Traffic Router</h1>
+            <div id="status" class="status disconnected">Отключено</div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Управление подключением</h2>
+            <button id="connectBtn" class="button">Подключиться</button>
+            <button id="proxyBtn" class="button" disabled>Запустить прокси</button>
+            <button id="testBtn" class="button">Тест соединения</button>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Текущее состояние</h2>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-label">Регион:</span>
+                    <span id="region" class="status-value">Unknown</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Соединения:</span>
+                    <span id="connections" class="status-value">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Передано:</span>
+                    <span id="transferred" class="status-value">0 B</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Задержка:</span>
+                    <span id="latency" class="status-value">0 ms</span>
+                </div>
+            </div>
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Управление сервером</h2>
+            <button id="startServerBtn" class="button success">Запустить сервер</button>
+            <button id="stopServerBtn" class="button danger">Остановить сервер</button>
+            <button id="restartServerBtn" class="button">Перезапустить сервер</button>
+        </div>
+    </div>
+
+    <script>
+        // Простой интерфейс для демонстрации
+        let isConnected = false;
+        let isProxyActive = false;
+        let isServerRunning = false;
+
+        const elements = {
+            status: document.getElementById('status'),
+            connectBtn: document.getElementById('connectBtn'),
+            proxyBtn: document.getElementById('proxyBtn'),
+            testBtn: document.getElementById('testBtn'),
+            startServerBtn: document.getElementById('startServerBtn'),
+            stopServerBtn: document.getElementById('stopServerBtn'),
+            restartServerBtn: document.getElementById('restartServerBtn'),
+            region: document.getElementById('region'),
+            connections: document.getElementById('connections'),
+            transferred: document.getElementById('transferred'),
+            latency: document.getElementById('latency'),
+            error: document.getElementById('error')
+        };
+
+        // Обработчики событий
+        elements.connectBtn.addEventListener('click', toggleConnection);
+        elements.proxyBtn.addEventListener('click', toggleProxy);
+        elements.testBtn.addEventListener('click', testConnection);
+        elements.startServerBtn.addEventListener('click', startServer);
+        elements.stopServerBtn.addEventListener('click', stopServer);
+        elements.restartServerBtn.addEventListener('click', restartServer);
+
+        async function toggleConnection() {
+            if (window.electronAPI) {
+                // Реальная логика через Electron API
+                try {
+                    if (isConnected) {
+                        // Disconnect logic
+                        isConnected = false;
+                    } else {
+                        // Connect logic
+                        isConnected = true;
+                    }
+                    updateUI();
+                } catch (error) {
+                    showError(error.message);
+                }
+            } else {
+                // Демо режим
+                isConnected = !isConnected;
+                updateUI();
+            }
+        }
+
+        async function toggleProxy() {
+            if (!isConnected) return;
+            
+            isProxyActive = !isProxyActive;
+            updateUI();
+        }
+
+        async function testConnection() {
+            // Симуляция теста соединения
+            const latency = Math.floor(Math.random() * 100) + 50;
+            elements.latency.textContent = `${latency} ms`;
+            alert(`Тест соединения: ${latency} ms`);
+        }
+
+        async function startServer() {
+            if (window.electronAPI) {
+                try {
+                    await window.electronAPI.startServer();
+                    isServerRunning = true;
+                    updateUI();
+                } catch (error) {
+                    showError(error.message);
+                }
+            } else {
+                isServerRunning = true;
+                updateUI();
+            }
+        }
+
+        async function stopServer() {
+            if (window.electronAPI) {
+                try {
+                    await window.electronAPI.stopServer();
+                    isServerRunning = false;
+                    isConnected = false;
+                    isProxyActive = false;
+                    updateUI();
+                } catch (error) {
+                    showError(error.message);
+                }
+            } else {
+                isServerRunning = false;
+                isConnected = false;
+                isProxyActive = false;
+                updateUI();
+            }
+        }
+
+        async function restartServer() {
+            if (window.electronAPI) {
+                try {
+                    await window.electronAPI.restartServer();
+                    updateUI();
+                } catch (error) {
+                    showError(error.message);
+                }
+            } else {
+                await stopServer();
+                setTimeout(startServer, 1000);
+            }
+        }
+
+        function updateUI() {
+            // Статус подключения
+            elements.status.textContent = isConnected ? 'Подключено' : 'Отключено';
+            elements.status.className = `status ${isConnected ? 'connected' : 'disconnected'}`;
+
+            // Кнопки
+            elements.connectBtn.textContent = isConnected ? 'Отключиться' : 'Подключиться';
+            elements.connectBtn.className = `button ${isConnected ? 'danger' : 'success'}`;
+            
+            elements.proxyBtn.textContent = isProxyActive ? 'Остановить прокси' : 'Запустить прокси';
+            elements.proxyBtn.disabled = !isConnected;
+            
+            elements.startServerBtn.disabled = isServerRunning;
+            elements.stopServerBtn.disabled = !isServerRunning;
+            elements.restartServerBtn.disabled = !isServerRunning;
+
+            // Статистика
+            if (isConnected) {
+                elements.region.textContent = 'US (New York)';
+                elements.connections.textContent = Math.floor(Math.random() * 10);
+                elements.transferred.textContent = `${(Math.random() * 100).toFixed(2)} MB`;
+            } else {
+                elements.region.textContent = 'Unknown';
+                elements.connections.textContent = '0';
+                elements.transferred.textContent = '0 B';
+            }
+
+            hideError();
+        }
+
+        function showError(message) {
+            elements.error.textContent = message;
+            elements.error.style.display = 'block';
+        }
+
+        function hideError() {
+            elements.error.style.display = 'none';
+        }
+
+        // Инициализация
+        updateUI();
+
+        // Обработка событий от Electron (если доступно)
+        if (window.electronAPI) {
+            window.electronAPI.onServerStarted(() => {
+                isServerRunning = true;
+                updateUI();
+            });
+
+            window.electronAPI.onServerStopped(() => {
+                isServerRunning = false;
+                isConnected = false;
+                isProxyActive = false;
+                updateUI();
+            });
+
+            window.electronAPI.onServerError((error) => {
+                showError(`Ошибка сервера: ${error.message}`);
+            });
+        }
+    </script>
+</body>
+</html>

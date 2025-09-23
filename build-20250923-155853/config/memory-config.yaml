@@ -1,0 +1,207 @@
+# Memory System Configuration
+# Конфигурация системы памяти AI агента
+
+# Основные настройки
+memory:
+  # Директория для хранения памяти
+  storage_directory: "memory"
+  
+  # Максимальное количество записей на сущность
+  max_entries_per_entity: 1000
+  
+  # Автоматическая очистка старых записей (дни)
+  auto_cleanup_days: 30
+  
+  # Включить сжатие старых записей
+  compression_enabled: true
+  
+  # Включить индексацию для быстрого поиска
+  indexing_enabled: true
+  
+  # Размер кеша индекса в памяти
+  index_cache_size: 10000
+
+# Типы памяти и их приоритеты
+memory_types:
+  fact:
+    priority: 1
+    description: "Фактическая информация"
+    retention_days: 90
+  
+  decision:
+    priority: 3
+    description: "Принятые решения"
+    retention_days: 180
+  
+  observation:
+    priority: 2
+    description: "Наблюдения и заметки"
+    retention_days: 60
+  
+  error:
+    priority: 4
+    description: "Ошибки и проблемы"
+    retention_days: 365
+  
+  success:
+    priority: 3
+    description: "Успешные операции"
+    retention_days: 120
+  
+  warning:
+    priority: 3
+    description: "Предупреждения"
+    retention_days: 180
+  
+  recovery:
+    priority: 4
+    description: "Действия по восстановлению"
+    retention_days: 365
+  
+  monitoring:
+    priority: 2
+    description: "Данные мониторинга"
+    retention_days: 30
+
+# Уровни важности
+importance_levels:
+  1:
+    name: "low"
+    description: "Низкая важность"
+    retention_multiplier: 0.5
+  
+  2:
+    name: "normal"
+    description: "Обычная важность"
+    retention_multiplier: 1.0
+  
+  3:
+    name: "high"
+    description: "Высокая важность"
+    retention_multiplier: 2.0
+  
+  4:
+    name: "critical"
+    description: "Критическая важность"
+    retention_multiplier: 5.0
+  
+  5:
+    name: "emergency"
+    description: "Чрезвычайная важность"
+    retention_multiplier: 10.0
+
+# Настройки поиска
+search:
+  # Максимальное количество результатов по умолчанию
+  default_limit: 10
+  
+  # Максимальное количество результатов
+  max_limit: 100
+  
+  # Минимальный порог релевантности
+  relevance_threshold: 0.1
+  
+  # Включить нечеткий поиск
+  fuzzy_search: true
+  
+  # Вес различных факторов при поиске
+  scoring:
+    exact_match: 10.0
+    word_match: 2.0
+    tag_match: 5.0
+    metadata_match: 3.0
+    importance_bonus: 0.5
+
+# Настройки экспорта
+export:
+  # Форматы экспорта
+  supported_formats:
+    - json
+    - yaml
+    - markdown
+  
+  # Включать метаданные в экспорт
+  include_metadata: true
+  
+  # Максимальный размер экспорта (MB)
+  max_export_size_mb: 100
+
+# Настройки производительности
+performance:
+  # Размер пакета для обработки записей
+  batch_size: 100
+  
+  # Интервал автосохранения индекса (секунды)
+  index_save_interval: 300
+  
+  # Включить асинхронную обработку
+  async_processing: true
+  
+  # Максимальное количество одновременных операций
+  max_concurrent_operations: 10
+
+# Настройки логирования
+logging:
+  # Уровень логирования для памяти
+  level: "INFO"
+  
+  # Логировать операции поиска
+  log_search_operations: false
+  
+  # Логировать операции обновления
+  log_update_operations: true
+  
+  # Логировать статистику производительности
+  log_performance_stats: true
+
+# Настройки безопасности
+security:
+  # Максимальный размер одной записи (KB)
+  max_entry_size_kb: 1024
+  
+  # Фильтрация содержимого
+  content_filtering:
+    # Удалять потенциально чувствительные данные
+    remove_sensitive_data: true
+    
+    # Паттерны для поиска чувствительных данных
+    sensitive_patterns:
+      - "password"
+      - "token"
+      - "api_key"
+      - "secret"
+  
+  # Ограничения доступа
+  access_control:
+    # Разрешенные операции для разных ролей
+    roles:
+      read_only:
+        - search_memory
+        - get_memory_stats
+        - get_entity_memory
+      
+      read_write:
+        - search_memory
+        - get_memory_stats
+        - get_entity_memory
+        - update_memory
+      
+      admin:
+        - "*"
+
+# Настройки интеграции с MCP
+mcp_integration:
+  # Порт MCP сервера памяти
+  server_port: 3003
+  
+  # Автоматически запускать MCP сервер
+  auto_start_server: true
+  
+  # Таймаут для MCP операций (секунды)
+  operation_timeout: 30
+  
+  # Максимальное количество одновременных MCP подключений
+  max_connections: 10
+  
+  # Включить CORS для веб-интерфейса
+  enable_cors: true

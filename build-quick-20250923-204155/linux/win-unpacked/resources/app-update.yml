@@ -1,0 +1,4 @@
+owner: traffic-router
+repo: desktop-app
+provider: github
+updaterCacheDirName: traffic-router-desktop-updater
