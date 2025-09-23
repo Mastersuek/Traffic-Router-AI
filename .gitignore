@@ -128,6 +128,7 @@ junit.xml
 
 # === СБОРОЧНЫЕ ФАЙЛЫ ===
 build/
+build-*/
 dist/
 executables/
 *.exe
@@ -137,6 +138,7 @@ executables/
 *.rpm
 *.dmg
 *.msi
+*.asar
 
 # === БОЛЬШИЕ ВРЕМЕННЫЕ ФАЙЛЫ ===
 *.zip
