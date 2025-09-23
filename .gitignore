@@ -140,6 +140,11 @@ executables/
 *.msi
 *.asar
 
+# === КЛИЕНТСКИЕ СБОРКИ ===
+clients/*/dist/
+clients/*/build/
+clients/*/out/
+
 # === БОЛЬШИЕ ВРЕМЕННЫЕ ФАЙЛЫ ===
 *.zip
 *.tar
