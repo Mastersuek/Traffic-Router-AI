@@ -123,6 +123,28 @@ junit.xml
 *.lcov
 *test_results.json
 *test_report.txt
+*.tar.gz
+*.sha256
+
+# === СБОРОЧНЫЕ ФАЙЛЫ ===
+build/
+dist/
+executables/
+*.exe
+*.AppImage
+*.apk
+*.deb
+*.rpm
+*.dmg
+*.msi
+
+# === БОЛЬШИЕ ВРЕМЕННЫЕ ФАЙЛЫ ===
+*.zip
+*.tar
+*.gz
+*.bz2
+*.7z
+*.rar
 
 # === VERCEL ===
 .vercel
