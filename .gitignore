@@ -50,6 +50,8 @@ ENV/
 env.bak/
 venv.bak/
 .virtualenv
+test_venv/
+*_venv/
 
 # === КОНФИДЕНЦИАЛЬНЫЕ ДАННЫЕ ===
 .env*
@@ -115,9 +117,12 @@ Dockerfile.dev
 
 # === ТЕСТЫ И ОТЧЕТЫ ===
 test-results/
+test_results/
 coverage.xml
 junit.xml
 *.lcov
+*test_results.json
+*test_report.txt
 
 # === VERCEL ===
 .vercel
