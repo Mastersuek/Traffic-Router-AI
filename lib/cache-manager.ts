@@ -18,7 +18,7 @@ interface CacheConfig {
 export class CacheManager<T = any> extends EventEmitter {
   private cache: Map<string, CacheEntry<T>> = new Map();
   private config: CacheConfig;
-  private cleanupInterval!: NodeJS.Timeout;
+  private cleanupInterval: NodeJS.Timeout | undefined;
   private logger: winston.Logger;
   private stats = {
     hits: 0,

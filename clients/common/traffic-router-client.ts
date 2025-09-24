@@ -1,5 +1,5 @@
 import type { ClientConfig, ConnectionStatus, TrafficStats } from "./client-config"
-import { fetchWithTimeout } from "../../lib/fetch-timeout-polyfill"
+import { fetchWithTimeout, type EnhancedRequestInit } from "../../lib/fetch-timeout-polyfill"
 
 export class TrafficRouterClient {
   private config: ClientConfig

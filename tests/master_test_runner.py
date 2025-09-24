@@ -208,6 +208,9 @@ class MasterTestRunner:
             # TypeScript compilation test
             ("test_typescript_compilation.py", "TypeScript Compilation Tests", "python"),
             
+            # NTFS/fuseblk fixes test
+            ("test_ntfs_fixes.py", "NTFS/fuseblk Fixes Tests", "python"),
+            
             # Enhanced recovery agent tests
             ("enhanced-recovery-agent.test.py", "Enhanced Recovery Agent Tests", "python"),
             ("fault-tolerance-tests.py", "Fault Tolerance Tests", "python"),

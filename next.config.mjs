@@ -12,6 +12,34 @@ const nextConfig = {
   output: 'standalone',
   experimental: {
     outputFileTracingRoot: undefined,
+    // Fix for NTFS/fuseblk filesystem issues
+    esmExternals: 'loose',
+    serverComponentsExternalPackages: [],
+  },
+  
+  // Fix for EPERM copyfile issues on NTFS/fuseblk
+  webpack: (config, { isServer, dev }) => {
+    // Disable file system caching on problematic filesystems
+    if (process.platform === 'linux') {
+      config.cache = false;
+    }
+    
+    // Fix for NTFS/fuseblk permission issues
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ['**/node_modules/**', '**/.git/**', '**/.next/**'],
+      poll: 1000, // Use polling instead of native file watching
+      aggregateTimeout: 300,
+    };
+    
+    // Disable file system based caching
+    config.snapshot = {
+      ...config.snapshot,
+      managedPaths: [],
+      immutablePaths: [],
+    };
+    
+    return config;
   },
   
   // Production optimizations

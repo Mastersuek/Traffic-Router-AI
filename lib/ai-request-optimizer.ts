@@ -4,7 +4,7 @@ export interface OptimizationRule {
   provider: string
   pattern: RegExp
   transform: (body: any) => any
-  cacheKey?: (body: any) => string | null
+  cacheKey?: (body: any) => string
   cacheTTL?: number
 }
 
@@ -36,7 +36,7 @@ export class AIRequestOptimizer {
         if (body.messages && body.messages.length === 1) {
           return `openai:${JSON.stringify(body.messages[0])}`
         }
-        return null
+        return ""
       },
       cacheTTL: 300000, // 5 минут
     })
@@ -56,7 +56,7 @@ export class AIRequestOptimizer {
         if (body.messages && body.messages.length <= 2) {
           return `anthropic:${JSON.stringify(body.messages)}`
         }
-        return null
+        return ""
       },
       cacheTTL: 300000,
     })

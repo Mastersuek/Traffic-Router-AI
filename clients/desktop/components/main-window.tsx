@@ -325,7 +325,7 @@ export function MainWindow() {
               <CardContent>
                 <div className="space-y-2">
                   {stats.topDomains.length > 0 ? (
-                    stats.topDomains.map((domain, index) => (
+                    stats.topDomains.map((domain: { domain: string; requests: number }, index: number) => (
                       <div key={domain.domain} className="flex items-center justify-between p-2 rounded-lg bg-muted">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium">#{index + 1}</span>

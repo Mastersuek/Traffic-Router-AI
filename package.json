@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:ntfs": "bash scripts/build-ntfs-fix.sh",
+    "build:quick": "bash scripts/quick-build.sh",
+    "fix:permissions": "bash scripts/fix-permissions.sh",
+    "fix:all": "bash scripts/fix-all-issues.sh",
     "dev": "cross-env PORT=13000 next dev",
     "dev:proxy": "cross-env AI_PROXY_PORT=13081 node server/ai-proxy-server.js",
     "dev:enhanced-proxy": "cross-env AI_PROXY_PORT=13081 node server/enhanced-ai-proxy-server.js",

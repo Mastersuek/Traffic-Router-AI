@@ -224,7 +224,7 @@ const TrafficRouterApp: React.FC = () => {
           <Text style={styles.cardTitle}>Топ доменов</Text>
 
           {stats.topDomains.length > 0 ? (
-            stats.topDomains.slice(0, 5).map((domain, index) => (
+            stats.topDomains.slice(0, 5).map((domain: { domain: string; requests: number }, index: number) => (
               <View key={domain.domain} style={styles.domainRow}>
                 <View style={styles.domainInfo}>
                   <Text style={styles.domainRank}>#{index + 1}</Text>
